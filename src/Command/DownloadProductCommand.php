@@ -25,15 +25,18 @@ class DownloadProductCommand extends Command {
 
         $fileHandler = fopen('./result', 'w');
         foreach($this->httpClient->stream($response) as $chunk) {
-            $lines = array_filter(explode("\n", $chunk->getContent()), fn($line) => !empty($line)); ;
-            foreach($lines as $line) {
-                $line = json_decode($line);
-                $order = implode(';', [
-                    $line->order_id,
-                    $line->order_date,
-                ]);
+            $content = $chunk->getContent();
+            if (!empty($content)) {
+                $lines = array_filter(explode("\n", $chunk->getContent()), fn($line) => !empty($line));
+                foreach($lines as $line) {
+                    $line = json_decode($line);
+                    $order = implode(';', [
+                        $line->order_id,
+                        $line->order_date,
+                    ]);
 
-                fwrite($fileHandler, $order . PHP_EOL);
+                    fwrite($fileHandler, $order . PHP_EOL);
+                }
             }
         }
 
