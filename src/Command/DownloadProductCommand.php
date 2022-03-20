@@ -1,6 +1,8 @@
 <?php
 namespace App\Command;
 
+use App\Mapper\Contract\IDataMapper;
+use App\Utility\Contract\IChunkParser;
 use App\Utility\Contract\IFormattedFileWriter;
 use App\Utility\JsonLineChunkParser;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -27,7 +29,8 @@ class DownloadProductCommand extends Command {
     public function __construct(
         private HttpClientInterface $httpClient,
         private IFormattedFileWriter $storage,
-        private JsonLineChunkParser $parser,
+        private IChunkParser $parser,
+        private IDataMapper $mapper,
     ) {
         parent::__construct();
     }
@@ -54,14 +57,15 @@ class DownloadProductCommand extends Command {
 
                 if (count($data->getParsed()) > 0) {
                     foreach($data->getParsed() as $parsed) {
+                        $order = $this->mapper->map($parsed);
                         $this->storage->write([
-                            $parsed['order_id'],
-                            'order_datetime',
-                            'total_order_value',
-                            'average_unit_price',
-                            'distinct_unit_count',
-                            'total_units_count',
-                            'customer_state'
+                            $order->getId(),
+                            $order->getOrderedAt(),
+                            $order->getTotalPrice(),
+                            $order->getAvgPrice(),
+                            $order->getUniqueProductsNumber(),
+                            $order->getOrderedProductsNumber(),
+                            $order->getCustomer()->getState(),
                         ]);
                     }
                 }
@@ -72,32 +76,7 @@ class DownloadProductCommand extends Command {
             }
         }
 
-        return Command::SUCCESS;
-    }
-
-    private function _run()
-    {
-
-        $url = 'https://s3-ap-southeast-2.amazonaws.com/catch-code-challenge/challenge-1-in.jsonl';
-        $response = $this->httpClient->request('GET', $url);
-
-        $fileHandler = fopen('./result', 'w');
-        foreach($this->httpClient->stream($response) as $chunk) {
-            $content = $chunk->getContent();
-            if (!empty($content)) {
-                $lines = array_filter(explode("\n", $chunk->getContent()), fn($line) => !empty($line));
-                foreach($lines as $line) {
-                    $line = json_decode($line);
-                    $order = implode(';', [
-                        $line->order_id,
-                        $line->order_date,
-                    ]);
-
-                    fwrite($fileHandler, $order . PHP_EOL);
-                }
-            }
-        }
-
+        // TODO Emit event on success
         return Command::SUCCESS;
     }
 }

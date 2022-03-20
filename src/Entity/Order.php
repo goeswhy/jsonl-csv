@@ -6,6 +6,7 @@ class Order {
         private int $id,
         private string $orderedAt,
         private array $orderItems,
+        private Customer $customer,
     ) {}
 
     /**
@@ -36,7 +37,7 @@ class Order {
     /**
      * @return int 
      */
-    public function getUniqueProducts(): int
+    public function getUniqueProductsNumber(): int
     {
         return count($this->orderItems);
     }
@@ -44,15 +45,23 @@ class Order {
     /**
      * @return int 
      */
-    public function getOrderedProducts(): int
+    public function getOrderedProductsNumber(): int
     {
-        return array_reduce($this->orderItems, fn(int $numbers, OrderItem $orderItem) => $numbers += $orderItem->getQuantity());
+        return array_reduce($this->orderItems, fn($numbers = 0, OrderItem $orderItem) => $numbers += $orderItem->getQuantity());
     }
 
     public function getAvgPrice(): float
     {
-        $totalPrice = array_reduce($this->orderItems, fn(float $totalPrice, OrderItem $orderItem) => $totalPrice += $orderItem->getUnitPrice());
+        return $this->getTotalPrice() / $this->getUniqueProductsNumber();
+    }
 
-        return $totalPrice / $this->getUniqueProducts();
+    public function getTotalPrice(): float
+    {
+        return array_reduce($this->orderItems, fn($totalPrice = 0, OrderItem $orderItem) => $totalPrice += $orderItem->getUnitPrice());
+    }
+
+    public function getCustomer(): Customer
+    {
+        return $this->customer;
     }
 }
