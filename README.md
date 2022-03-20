@@ -23,3 +23,6 @@ $ php bin/console app:order-download
 ```
 
 The output file will be written to ./out.csv
+
+Notes :
+The default source URL will be to https://s3-ap-southeast-2.amazonaws.com/catch-code-challenge/challenge-1-in.jsonl. This can be override from using env var `SOURCE_URL`

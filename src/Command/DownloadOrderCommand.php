@@ -37,7 +37,7 @@ class DownloadOrderCommand extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $url = 'https://s3-ap-southeast-2.amazonaws.com/catch-code-challenge/challenge-1-in.jsonl';
+        $url = $_SERVER['SOURCE_URL'] ?? 'https://s3-ap-southeast-2.amazonaws.com/catch-code-challenge/challenge-1-in.jsonl';
         $response = $this->httpClient->request('GET', $url);
 
         $previousChunk = NULL;
