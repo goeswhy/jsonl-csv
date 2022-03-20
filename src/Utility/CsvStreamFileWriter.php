@@ -14,8 +14,8 @@ class CsvStreamFileWriter implements IFormattedFileWriter {
      */
     private array $header = [];
 
-    public function __construct(private IFileStorage $storage, private string $filename) {
-        $this->init($filename);
+    public function __construct(private IFileStorage $storage, private string $outputFilename) {
+        $this->init($outputFilename);
     }
 
     private function init(string $filename): void {
@@ -52,7 +52,7 @@ class CsvStreamFileWriter implements IFormattedFileWriter {
             throw new CsvStreamWriteException('Write failed, invalid header column length');
         }
 
-        $this->storage->append($this->filename, $this->toCsv($data));
+        $this->storage->append($this->outputFilename, $this->toCsv($data));
     }
 
     /**

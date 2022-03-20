@@ -10,7 +10,7 @@ class ParsedChunk {
     public function __construct(private array $parsed, private ?string $unparsed) {}
 
     /**
-     * @return array<string>
+     * @return array
      */
     public function getParsed(): array {
         return $this->parsed;

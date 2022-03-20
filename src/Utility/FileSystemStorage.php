@@ -1,6 +1,7 @@
 <?php
-namespace App\Utility\Contract;
+namespace App\Utility;
 
+use App\Utility\Contract\IFileStorage;
 use Symfony\Component\Filesystem\Filesystem;
 
 class FileSystemStorage implements IFileStorage {
