@@ -10,15 +10,19 @@ class JsonlOrderDataMapper implements IDataMapper {
     public static function map(array $parsed): Order
     {
         $orderItems = array_map(function($orderItem) {
-            return new OrderItem((int) $orderItem['quantity'], (float) $orderItem['unit_price']);
+            return new OrderItem(
+                quantity: (int) $orderItem['quantity'], 
+                unitPrice: (float) $orderItem['unit_price']);
         }, $parsed['items']);
-        $customer = new Customer($parsed['customer']['shipping_address']['state']);
+        $customer = new Customer(
+            state: $parsed['customer']['shipping_address']['state']
+        );
 
         return new Order(
-            $parsed['order_id'],
-            $parsed['order_date'],
-            $orderItems,
-            $customer
+            id: $parsed['order_id'],
+            orderedAt: $parsed['order_date'],
+            orderItems: $orderItems,
+            customer: $customer
         );
     }
 }
