@@ -9,7 +9,10 @@ class CsvStreamFileWriter implements IFormattedFileWriter {
     const SEPARATOR = ';';
     const ENDLINE = "\n";
 
-    private array $header;
+    /**
+     * @var array<string>
+     */
+    private array $header = [];
 
     public function __construct(private IFileStorage $storage, private string $filename) {
         $this->init($filename);
@@ -19,12 +22,23 @@ class CsvStreamFileWriter implements IFormattedFileWriter {
         $this->storage->touch($filename);
     }
 
+    /**
+     * 
+     * @param array<string> $header 
+     * @return CsvStreamFileWriter 
+     */
     public function setHeader(array $header): self
     {
         $this->header = $header;
         return $this;
     }
 
+    /**
+     * 
+     * @param array<string> $data 
+     * @return void 
+     * @throws CsvStreamWriteException 
+     */
     public function write(array $data): void
     {
         if (empty($this->header)) {
@@ -41,6 +55,10 @@ class CsvStreamFileWriter implements IFormattedFileWriter {
         $this->storage->append($this->filename, $this->toCsv($data));
     }
 
+    /**
+     * @param array<string> $data 
+     * @return string 
+     */
     private function toCsv(array $data): string {
         return implode(self::SEPARATOR, $data) . self::ENDLINE;
     }
