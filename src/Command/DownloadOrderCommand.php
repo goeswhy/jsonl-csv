@@ -13,11 +13,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsCommand(
-    name: 'app:product-download',
-    description: 'Download and convert product to specified document (default csv)',
+    name: 'app:order-download',
+    description: 'Download and convert order to specified document (default csv)',
     hidden: false,
 )]
-class DownloadProductCommand extends Command {
+class DownloadOrderCommand extends Command {
     /**
      * 
      * @param HttpClientInterface $httpClient 

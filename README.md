@@ -19,7 +19,7 @@ For symfony-cli installation, please refer to this documentation : https://symfo
 ## Run
 Within the document root, run this command to start download
 ```shell
-$ php bin/console app:product-download 
+$ php bin/console app:order-download 
 ```
 
 The output file will be written to ./out.csv
